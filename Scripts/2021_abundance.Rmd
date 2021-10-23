@@ -4,6 +4,9 @@ author: "Ben Caulfield"
 date: "10/18/2021"
 output: github_document
 ---
+
+**Currently unable to knit due to an issue opening image files that the script itself makes.
+
 # Goal
 Analyze Bacterial abundance data from 2021 remineralization experiments.
 
