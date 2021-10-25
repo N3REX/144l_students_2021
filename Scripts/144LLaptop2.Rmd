@@ -1,0 +1,117 @@
+---
+title: "2021 144L Abundance Laptopv"
+author: "Ben Caulfield"
+date: "10/18/2021"
+output: github_document
+---
+
+**Currently unable to knit due to an issue opening image files that the script itself makes.
+
+# Goal
+Analyze Bacterial abundance data from 2021 remineralization experiments.
+
+```{r Load packages, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(readxl)
+library(lubridate)
+```
+
+```{r importing}
+excel_sheets("~/R/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx")
+
+
+metadata <- read_excel("~/R/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx")
+
+glimpse(metadata)
+#unique(metadata$Bottle)
+#unique(metadata$Treatment)
+
+data <- read_excel("~/R/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "Data")
+glimpse(data)
+joined <-  left_join(metadata, data) #attach data to metadata
+glimpse(joined)
+
+```
+
+```{r Cells data prep, warning=FALSE, message=FALSE}
+cells <- joined %>%
+  mutate(Datetime = ymd_hm(Datetime), #splits apart Datetime as specified
+  
+  cells_L =  as.numeric(all_cells_uL)* 1000000) %>%
+  group_by(Treatment, Bottle) %>%
+#group our dataset so that we can calculate the time elapsed properly 
+  mutate(interv = interval(first(Datetime), Datetime), 
+         s = as.numeric(interv), 
+         hours = s/3600, 
+         days = hours/24) %>%
+  ungroup() %>%
+  select(Experiment:DNA_Sample, cells_L, hours, days) %>%
+  drop_na(cells_L)
+glimpse(cells)
+```
+
+```{r Initial Plot Growth Curves,warning=FALSE}
+
+custom.colors <- c("Control" = "#66c2a5", "Kelp Exudate_Nitrate_Phosphate" = "#fc8d62", "Kelp Exudate" = "#8da0cb", "Glucose_Nitrate_Phosphate" = "#e78ac3")
+levels <- c("Control", "Kelp Exudate_Nitrate_Phosphate", "Kelp Exudate", "Glucose_Nitrate_Phosphate")
+cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x=days, y=cells_L, group = interaction(Treatment, Bottle))) +
+  geom_line(aes(color = factor(Treatment, levels = levels)), size =1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) + 
+  geom_text(aes(label = dna), size = 12, color = "#E41A1C") +
+  labs(x = "Days", y = expression(paste("Cells, L"^-1)), fill = "") + 
+  guides(color = "none") + 
+  scale_color_manual(values = custom.colors) +
+  scale_fill_manual(values = custom.colors) +
+  #facet_grid(rows = "Treatment")
+  theme_bw()
+glimpse(cells)
+```
+
+```{r ln & diff_ln creation}
+ln_cells <- cells %>%
+  group_by(Treatment, Bottle) %>%
+  mutate(ln_cells = log(cells_L), 
+         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells)))
+```
+
+```{r Plotting dln_cells, fig.height=6, fig.width=6, warning=FALSE}
+ ln_cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x=days, y=diff_ln_cells, group = interaction(Treatment, Bottle))) +
+  geom_line(aes(color = factor(Treatment, levels = levels)), size =1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) + 
+  geom_text(aes(label = dna), size = 12, color = "#E41A1C") +
+  labs(x = "Days", y = expression(paste("Difference ln cells, L"^-1)), fill = "") + 
+  guides(color = "none") + 
+  scale_color_manual(values = custom.colors) +
+  scale_fill_manual(values = custom.colors) +
+  facet_wrap("Bottle", ncol =2)+
+  #facet_grid(rows= "Treatment")
+  
+  theme_bw()
+```
+
+
+```{r Plotting ln_cells, fig.height=6, fig.width=8, warning=FALSE}
+ln_cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x=days, y=ln_cells, group = interaction(Treatment, Bottle))) +
+  geom_line(aes(color = factor(Treatment, levels = levels)), size =1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) + 
+  geom_text(aes(label = dna), size = 12, color = "#E41A1C") +
+  labs(x = "Days", y = expression(paste("ln cells, L"^-1)), fill = "") + 
+  guides(color = "none") + 
+  scale_color_manual(values = custom.colors) +
+  scale_fill_manual(values = custom.colors) +
+  facet_wrap("Bottle", ncol =2) +
+  theme_bw()
+```
+
+*NOTE
+
+Some of the abundance timepoints are missing. this is due to sample labels falling off in LN2. This should be fixed by 10/25/21 since the groups with the wonky data went and remade the samples? Unless I'm dumb and they were just doing the PCR again.
+
+Three types of abundance data: all_cells, LNA_cells (low nucleic acid) and HNA_cells (high nucleic acid). you may want to investigate trends present in all three.
+
