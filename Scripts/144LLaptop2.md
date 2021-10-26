@@ -97,11 +97,11 @@ glimpse(joined)
 
 ``` r
 cells <- joined %>%
-  mutate(Datetime = ymd_hm(Datetime), #splits apart Datetime as specified
+  mutate(Datetime = ymd_hm(Datetime), #splits apart Datetime 
   
   cells_L =  as.numeric(all_cells_uL)* 1000000) %>%
   group_by(Treatment, Bottle) %>%
-#group our dataset so that we can calculate the time elapsed properly 
+#group our dataset so that we can calculate the time elapsed
   mutate(interv = interval(first(Datetime), Datetime), 
          s = as.numeric(interv), 
          hours = s/3600, 
