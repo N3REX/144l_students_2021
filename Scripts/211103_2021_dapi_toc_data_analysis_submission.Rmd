@@ -182,13 +182,18 @@ Q3: What are the limitations of using the DAPI data (only 3 timepoints) instead 
 
 A3: The limitations of using the DAPI data is that we are very imprecise with selecting the exact phases of population growth. If we had say 10 time points to choose from, we'd be able to capture the populations' growth a lot more accurately. For example, if the exponential growth happened at 2/10 through 5/10, we would have use the data between 0 and 8 as 4 is in the middle of the growth period.
 
-            [|||||]
--------------------------------------------------
-        0 1 2 3 4 5 6 7 8 9 10
+#            |||||||
+#-------------------------------------------------
+#        0 1 2 3 4 5 6 7 8 9 10
 
-        [|||||||||||||||]
--------------------------------------------------
-        0       4       8
+#        |||||||||||||||||
+#-------------------------------------------------
+#        0       4       8
+
+
+This stuff makes sense in the .rmd but I lack the know-how to make it work in the knitted file.
+
+
 
 ## Calculate growth rates, doubling times, and ∆cell abundances using cell abundance data (cells/L)
 
@@ -381,13 +386,19 @@ toc %>%
 ```
 
 Q6: a) What was our target concentration of carbon to add to each treatment?
+
     b) Did we hit our target in each treatment?
+    
     c) What does this imply about our ability to assess the effect of the **type** of DOC added?
+    
     d) What happens to TOC over time in the incubations and does this align with our other data?
 
 A6: a) If I recall correctly our main goal was to get 10 uL of carbon sources in each treatment.
+
     b) We didn't hit this target, I know that at least one of the Exudate/Glucose incubations did not receive enough carbon.
+    
     c) As such we can't use our results to judge if types of DOC are the sole thing for our data since quantity of carbon is also now a variable that affects what we're looking at.
+    
     d)  Over time TOC decreases as its slurped up by the microbes as they grow and reproduce.The TOC data reflects other trends in our data as the rapidly growing Glucose incubation burned through most of it's carbon in two days. This could also be responsible for the die off my day four as a number of bacteria starved. The rest of the inclubations had TOC consumptions inversely mirroring their growth.
 
 ## Calculate DOC, ∆DOC, Bioavailable DOC Fraction, and Bacterial Growth Efficiency (BGE)

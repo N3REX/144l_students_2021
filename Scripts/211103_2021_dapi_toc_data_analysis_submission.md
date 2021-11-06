@@ -232,7 +232,11 @@ glimpse(cells)
 Q1: What differences between the treatments do you observe? Does this
 make sense in the context of the oxygen drawdown data (pictured below)?
 
-A1:
+A1: The Control saw a pretty linear growth rate while the supplemented
+test subjects grew at a much faster rate. Glucose/Nitrate/Phosphate
+treatment had the greatest amount of growth, reflected in the oxygen
+drawdown data as the subject used oxygen at a much greater rate than the
+other variables/options.
 
 Oxygen Drawdown: ![](EEMB144_remin_autoBOD.png)
 
@@ -294,7 +298,14 @@ glimpse(cells)
 Q2: What differences do you notice between the cell abundance data and
 the cell biovolume data across each treatment?
 
-A2:
+A2: The control saw the most gentle increase in abundance as well as the
+most subdued change in cell biovolume/size. The other test variables
+followed the same trends like with Kelp exudate having the next slowest
+growth and next lowest cell biovolume reached. Curiously while the
+glucose treatment had the fastest growth rate/oxygen consumption to the
+point where the population decreased at timepoint 8, there was still a
+net increase in biovolume while the next runnerup, Exudate/N/P saw a net
+decrease despite a constant positive growth.
 
 # Next Steps
 
@@ -357,7 +368,20 @@ instead of the FCM data? Hint: Think about this question in terms of
 bacterial growth curves, and which phase of growth we need in order to
 calculate specific growth rates.
 
-A3:
+A3: The limitations of using the DAPI data is that we are very imprecise
+with selecting the exact phases of population growth. If we had say 10
+time points to choose from, we’d be able to capture the populations’
+growth a lot more accurately. For example, if the exponential growth
+happened at 2/10 through 5/10, we would have use the data between 0 and
+8 as 4 is in the middle of the growth period.
+
+# \|\|\|\|\|\|\|
+
+#————————————————- # 0 1 2 3 4 5 6 7 8 9 10
+
+# \|\|\|\|\|\|\|\|\|\|\|\|\|\|\|\|\|
+
+#————————————————- # 0 4 8
 
 ## Calculate growth rates, doubling times, and ∆cell abundances using cell abundance data (cells/L)
 
@@ -565,7 +589,9 @@ saveRDS(trt_ba_biovol, "~/R/144l_students_2021/Output_Data/week6/144L_trt_ba_bio
 Q4: How do the bacterial carbon values change when we account for
 changes in cell biovolume as the experiment progresses?
 
-A4:
+A4: When we account for changes using a new formula the bacterial carbon
+sharply drops at day 4, where in the non-adjusted version all test
+subjects aside from Glucose saw an constant increase.
 
 ## Barplots
 
@@ -639,7 +665,10 @@ Q5: Do the patterns you see in the ∆Cells, specific growth rate (u), and
 doubling time line up with our previous observations of cell abundance?
 How about with the oxygen drawdown data?
 
-A5:
+A5: I mean it makes sense. The treatment with the largest change in
+growth (Glucose) also has the fastest growth rate and doubling time.
+Likewise the control with the longest doubling time also has the slowest
+growth rate and lowest change in cells.
 
 # Save Data
 
@@ -728,12 +757,22 @@ toc %>%
 ![](211103_2021_dapi_toc_data_analysis_submission_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 Q6: a) What was our target concentration of carbon to add to each
-treatment? b) Did we hit our target in each treatment? c) What does this
-imply about our ability to assess the effect of the **type** of DOC
-added? d) What happens to TOC over time in the incubations and does this
-align with our other data?
+treatment?
 
-A6: a) b) c) d)
+    b) Did we hit our target in each treatment?
+
+    c) What does this imply about our ability to assess the effect of the **type** of DOC added?
+
+    d) What happens to TOC over time in the incubations and does this align with our other data?
+
+A6: a) If I recall correctly our main goal was to get 10 uL of carbon
+sources in each treatment.
+
+    b) We didn't hit this target, I know that at least one of the Exudate/Glucose incubations did not receive enough carbon.
+
+    c) As such we can't use our results to judge if types of DOC are the sole thing for our data since quantity of carbon is also now a variable that affects what we're looking at.
+
+    d)  Over time TOC decreases as its slurped up by the microbes as they grow and reproduce.The TOC data reflects other trends in our data as the rapidly growing Glucose incubation burned through most of it's carbon in two days. This could also be responsible for the die off my day four as a number of bacteria starved. The rest of the inclubations had TOC consumptions inversely mirroring their growth.
 
 ## Calculate DOC, ∆DOC, Bioavailable DOC Fraction, and Bacterial Growth Efficiency (BGE)
 
@@ -855,4 +894,18 @@ Q7: How does incorporating biovolume change (or not change) your
 interpretation of the ∆DOC, Bioavaliable DOC, and BGE values? Provide
 1-2 sentences for each comparison (a vs. b,c vs. d & e vs. f)
 
-A7:
+A7: I mean for the most part incorporating biovolume doesn’t
+significantly change the interpretation of the data. The two kelp
+exudate incubations swap delta DOC/ and bioavailiable DOC but they’re so
+close that I don’t believe that it is significant when eyeballing the
+graphs. A/b and c/d are 1:1 identical to each other, so there isn’t much
+more in my opinion to say about them besides wondering if theres some
+sort of package that allows for Greek letter delta to show up instead of
+“\<U+2206>”.
+
+That said, for some reason incorporating the CCF doubles all of the
+non-control Bacterial Growth Efficiency, which makes a lot more sense
+than the Glucose/N/P incubation being less efficient than a substrate
+which is comparatively scarce of resources. I would’ve assumed that
+Glucose also had the highest BGE but having the highest DOC would mean
+it’d be lower than other ‘contenders’.
